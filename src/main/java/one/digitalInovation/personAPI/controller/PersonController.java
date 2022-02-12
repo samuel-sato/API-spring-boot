@@ -3,6 +3,7 @@ package one.digitalInovation.personAPI.controller;
 import one.digitalInovation.personAPI.dto.request.PersonDTO;
 import one.digitalInovation.personAPI.dto.response.MessageResponseDTO;
 import one.digitalInovation.personAPI.entity.Person;
+import one.digitalInovation.personAPI.exception.PersonNotFoundException;
 import one.digitalInovation.personAPI.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 @RestController
 @RequestMapping("/api/v1/people")
@@ -43,5 +45,10 @@ public class PersonController {
 	@GetMapping("/teste")
 	public String getBook() {
 		return "API RODANDO";
+	}
+
+	@GetMapping("/{id}")
+	public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException {
+		return personService.findById(id);
 	}
 }

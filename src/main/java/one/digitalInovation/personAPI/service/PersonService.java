@@ -3,12 +3,16 @@ package one.digitalInovation.personAPI.service;
 import one.digitalInovation.personAPI.dto.request.PersonDTO;
 import one.digitalInovation.personAPI.dto.response.MessageResponseDTO;
 import one.digitalInovation.personAPI.entity.Person;
+import one.digitalInovation.personAPI.exception.PersonNotFoundException;
 import one.digitalInovation.personAPI.mapper.PersonMapper;
 import one.digitalInovation.personAPI.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,9 +37,6 @@ public class PersonService {
                 .builder()
                 .message("Created person with ID "+ savedPerson.getId())
                 .build();
-
-
-
     }
 
     public List<PersonDTO> listAll() {
@@ -44,4 +45,14 @@ public class PersonService {
                 .map(personMapper::toDTO)
                 .collect(Collectors.toList());
     }
+
+
+    public PersonDTO findById(@PathVariable Long id ) throws PersonNotFoundException {
+        //Optional<Person> optionPerson =  personRepository.findById(id);
+        Person person = personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
+
+         return personMapper.toDTO(person);
+    }
+
+
 }
