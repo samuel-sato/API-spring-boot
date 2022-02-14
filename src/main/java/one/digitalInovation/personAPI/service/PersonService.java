@@ -2,9 +2,12 @@ package one.digitalInovation.personAPI.service;
 
 import one.digitalInovation.personAPI.dto.request.PersonDTO;
 import one.digitalInovation.personAPI.dto.response.MessageResponseDTO;
+import one.digitalInovation.personAPI.entity.Department;
 import one.digitalInovation.personAPI.entity.Person;
+import one.digitalInovation.personAPI.exception.DepartmentNotFoundException;
 import one.digitalInovation.personAPI.exception.PersonNotFoundException;
 import one.digitalInovation.personAPI.mapper.PersonMapper;
+import one.digitalInovation.personAPI.repository.DepartmentRepository;
 import one.digitalInovation.personAPI.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,15 +22,24 @@ import java.util.stream.Collectors;
 public class PersonService {
 
     private PersonRepository personRepository;
+    private DepartmentService departmentService;
 
     private final PersonMapper personMapper = PersonMapper.INSTANCE;
 
     @Autowired
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, DepartmentService departmentService) {
         this.personRepository = personRepository;
+        this.departmentService = departmentService;
     }
 
-    public MessageResponseDTO createPerson(PersonDTO personDTO) {
+    public MessageResponseDTO createPerson(PersonDTO personDTO) throws DepartmentNotFoundException {
+
+        //valid if Department exist;
+        if(personDTO.getDepartmentID() != 0){
+            departmentService.verifyIfExistsDepartment(personDTO.getDepartmentID());
+        }
+
+
         Person personToSave = PersonMapper.INSTANCE.toModel(personDTO);
 
         Person savedPerson = personRepository.save(personToSave);
@@ -48,24 +60,20 @@ public class PersonService {
 
     public PersonDTO findById(Long id ) throws PersonNotFoundException {
         //Optional<Person> optionPerson =  personRepository.findById(id);
-        Person person = verifyIfExists(id);
+        Person person = verifyIfExistsPerson(id);
 
          return personMapper.toDTO(person);
     }
 
 
     public void delete(Long id) throws PersonNotFoundException {
-        verifyIfExists(id);
+        verifyIfExistsPerson(id);
 
         personRepository.deleteById(id);
     }
 
-    private Person verifyIfExists(Long id) throws PersonNotFoundException {
-        return personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
-    }
-
     public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
-        verifyIfExists(id);
+        verifyIfExistsPerson(id);
         Person personToUpdate = PersonMapper.INSTANCE.toModel(personDTO);
 
         Person savedPerson = personRepository.save(personToUpdate);
@@ -75,4 +83,10 @@ public class PersonService {
                 .message("Updated person with ID "+ savedPerson.getId())
                 .build();
     }
+
+    private Person verifyIfExistsPerson(Long id) throws PersonNotFoundException {
+        return personRepository.findById(id).orElseThrow(() -> new PersonNotFoundException(id));
+    }
+
+
 }

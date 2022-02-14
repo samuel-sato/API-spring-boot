@@ -4,6 +4,7 @@ import one.digitalInovation.personAPI.dto.request.DepartmentDTO;
 import one.digitalInovation.personAPI.dto.response.MessageResponseDTO;
 import one.digitalInovation.personAPI.entity.Department;
 
+import one.digitalInovation.personAPI.exception.DepartmentNotFoundException;
 import one.digitalInovation.personAPI.repository.DepartmentRepository;
 import one.digitalInovation.personAPI.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/department")
@@ -30,8 +32,23 @@ public class DepartmentController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDTO createDepartmen(@RequestBody @Valid Department department){
-        return departmentService.createDepartment(department);
+    public MessageResponseDTO createDepartmen(@RequestBody @Valid DepartmentDTO departmentDTO){
+        return departmentService.createDepartment(departmentDTO);
+    }
+
+    @GetMapping()
+    public List<DepartmentDTO> listAll(){
+       return departmentService.listAll();
+    }
+
+    @GetMapping("/{id}")
+    public DepartmentDTO findById(@PathVariable Long id) throws DepartmentNotFoundException {
+       return  departmentService.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public  MessageResponseDTO updateById(@PathVariable Long id, @RequestBody @Valid DepartmentDTO departmentDTO) throws DepartmentNotFoundException {
+       return  departmentService.updateById(id, departmentDTO);
     }
 
 }

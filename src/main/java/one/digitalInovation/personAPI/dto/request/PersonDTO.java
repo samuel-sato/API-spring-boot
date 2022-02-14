@@ -34,7 +34,7 @@ public class PersonDTO {
 
     private String birthDate;
 
-    private Department department;
+    private Long departmentID;
 
     @Valid
     @NotEmpty

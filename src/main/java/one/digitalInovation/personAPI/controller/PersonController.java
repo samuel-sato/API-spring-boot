@@ -3,6 +3,7 @@ package one.digitalInovation.personAPI.controller;
 import one.digitalInovation.personAPI.dto.request.PersonDTO;
 import one.digitalInovation.personAPI.dto.response.MessageResponseDTO;
 import one.digitalInovation.personAPI.entity.Person;
+import one.digitalInovation.personAPI.exception.DepartmentNotFoundException;
 import one.digitalInovation.personAPI.exception.PersonNotFoundException;
 import one.digitalInovation.personAPI.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class PersonController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) {
+	public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) throws DepartmentNotFoundException {
 		return personService.createPerson(personDTO);
 	}
 

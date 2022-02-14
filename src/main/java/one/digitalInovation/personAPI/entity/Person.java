@@ -34,8 +34,7 @@ public class Person {
 
 	private LocalDate birthDate;
 
-	@ManyToOne
-	private Department department;
+	private Long departmentID;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
 	private List<Phone> phones;
