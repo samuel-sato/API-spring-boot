@@ -10,7 +10,6 @@ public class MessageResponseDTO {
 	private String message;
 
 	MessageResponseDTO(){
-		
 	}
 
 	public MessageResponseDTO(String message) {

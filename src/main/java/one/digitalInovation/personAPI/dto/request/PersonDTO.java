@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import one.digitalInovation.personAPI.entity.Department;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.Valid;
@@ -32,6 +33,8 @@ public class PersonDTO {
     private String cpf;
 
     private String birthDate;
+
+    private Department department;
 
     @Valid
     @NotEmpty
